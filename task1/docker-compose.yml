@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  odoo:
+    image: odoo:latest
+    container_name: odoo_app
+    ports:
+      - "9001:8069"
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_DB=postgres
+      - DEBUG=1
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - odoo_logs:/var/log/odoo
+      - ./config:/etc/odoo
+    depends_on:
+      - db
+    command: ["--config", "/etc/odoo/odoo.conf"]
+
+  db:
+    image: postgres:12
+    container_name: odoo_db
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_DB=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  odoo_data:
+  odoo_logs:
+  db_data:
