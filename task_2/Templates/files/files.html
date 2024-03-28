@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="header-container">
+    <h2>File List</h2>
+    <form action="{% url 'files:files' %}" method="get" class="search-form">
+        <input type="text" id="search-box" name="q" placeholder="Search files..." value="{{ request.GET.q }}">
+        <button type="submit" class="search-button">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+    <button
+      id="upload-button"
+      class="custom-button"
+      style="background-color: green"
+      data-url="{% url 'files:file-upload' %}"
+      onclick="loadAndShowModal(this)">
+        Upload new file
+    </button>
+</div>
+
+  <div class="modal-backdrop-custom" id="modal-backdrop">
+    <div id="file-upload-modal">
+    </div>
+  </div>
+
+
+<table class="table table-striped table-hover table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">№</th>
+      <th scope="col">File Name</th>
+      <th scope="col">Storage Type</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% if files %}
+    {% for file in files %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td>{{ file.name }}</td>
+      <td>
+        {% if file.storage_type == 'disk' %}
+        Stored on disk
+        {% elif file.storage_type == 'db' %}
+        Stored in database
+        {% endif %}
+      </td>
+      <td>
+        <form method="post" action="{% url 'files:file-delete' pk=file.pk %}">
+          {% csrf_token %}
+           <button
+            class="btn btn-danger btn-sm">
+          <i class="fa fa-trash" aria-hidden="true"></i> Delete
+        </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  {% else %}
+    {% for _ in "01234567891011" %}
+      <tr>
+        <td colspan="4">&nbsp;</td>
+      </tr>
+      {% endfor %}
+  {% endif %}
+  </tbody>
+</table>
+  {% include 'includes/pagination.html' %}
+
+{% endblock %}

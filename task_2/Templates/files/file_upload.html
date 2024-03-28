@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <button id="close-modal-window" onclick="closeModal()">&times;</button>
+  <div class="center-container">
+    <h1>File upload</h1>
+  </div>
+  <form method="post" enctype="multipart/form-data" action="{% url 'files:file-upload' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+    <div class="center-container">
+      <button type="submit">Upload</button>
+    </div>
+  </form>
+{% endblock %}
